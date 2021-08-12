@@ -1,4 +1,24 @@
-# Szavazokorok
+# Tisztaszavazás API
+
+A simple app to get Hungarian ballot office data. You can get an API key and access to database at info@tisztaszavazas.hu e-mail address.
+
+You can get detailed (Hungarian) API documentation after running the app and browse http://localhost:1338/ or [here](https://api.tisztaszavazas.hu/).
+
+## Deployment
+
+Clone the repository like this:
+
+`git clone git@github.com:Code-for-Hungary/tisztaszavazas-api.git`
+
+## Run
+
+```shell script
+cd tisztaszavazas-api
+cp .env.example .env
+# configure the environment vars in .env file
+yarn
+yarn start
+```
 
 ## Authorization
 
@@ -31,7 +51,8 @@ Add your token to the header of the request:
 #### Curl examples
 
 `curl --location --request GET 'http://localhost:1338/szavazokorok' \
- --header 'Authorization: {{authtoken}}' \
- --header 'X-Valasztas-Kodja: ogy2018'`
+ --header "Connection: close" \
+ --header 'X-Valasztas-Kodja: ogy2018' \
+ --header 'Authorization: {{authtoken}}'`
 
-`curl --location --request GET 'http://localhost:1338/szavazokorok/szavazokorok?kozigEgyseg.megyeKod=1&kozigEgyseg.telepulesKod=1&szavazokorSzama=12' --header 'Authorization: {{authtoken}}' --header 'X-Valasztas-Kodja: ogy2018'`
+`curl --location --request GET 'http://localhost:1338/szavazokorok' --header "Connection: close" --header 'X-Valasztas-Kodja: ogy2018' --header 'Authorization: {{authtoken}}'`
