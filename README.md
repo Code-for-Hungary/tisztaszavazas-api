@@ -12,7 +12,7 @@ Add your token to the header of the request:
 
 ## Endpoints
 
-### /szavazokorok
+### Szavazokorok
 
 #### Get all ballot office
 
@@ -28,4 +28,10 @@ Add your token to the header of the request:
 
 `GET /szavazokorok?kozigEgyseg.megyeKod=1&kozigEgyseg.telepulesKod=1&szavazokorSzama=12`
 
+#### Curl examples
 
+`curl --location --request GET 'http://localhost:1338/szavazokorok' \
+ --header 'Authorization: {{authtoken}}' \
+ --header 'X-Valasztas-Kodja: ogy2018'`
+
+`curl --location --request GET 'http://localhost:1338/szavazokorok/szavazokorok?kozigEgyseg.megyeKod=1&kozigEgyseg.telepulesKod=1&szavazokorSzama=12' --header 'Authorization: {{authtoken}}' --header 'X-Valasztas-Kodja: ogy2018'`
