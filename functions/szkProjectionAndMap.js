@@ -89,8 +89,8 @@ const mapQueryResult = (result, query) => {
     szavazokorSzama,
     kozigEgyseg: {
       _id: kozigEgyseg['_id'],
-      kozigEgysegNeve: kozigEgyseg.kozigEgysegNeve,
-      megyeNeve: kozigEgyseg.megyeNeve,
+      ...kozigEgyseg,
+      __v: undefined,
       link: `/kozigegysegek/${kozigEgyseg['_id']}`
     },
     szavazokorCime,
