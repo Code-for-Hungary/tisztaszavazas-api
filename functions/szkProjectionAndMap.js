@@ -79,6 +79,8 @@ const mapQueryResult = (result, query) => {
     akadalymentes,
     valasztokerulet,
     valasztokSzama,
+    korzethatar,
+    szavazohelyisegHelye,
     ...rest
   } = doc
 
@@ -96,6 +98,8 @@ const mapQueryResult = (result, query) => {
     valasztokerulet,
     kozteruletek: mapKozteruletek(kozteruletek),
     valasztokSzama,
+    korzethatar,
+    szavazohelyisegHelye,
     __v
   }
 
