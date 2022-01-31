@@ -18,21 +18,25 @@ const onk2019_v2_kozigegyseg = model('onk2019_v2_kozigegyseg', KozigEgysegSchema
 const ogy2018_v1_kozigegyseg = model('ogy2018_v1_kozigegyseg', KozigEgysegSchema)
 const ogy2018_v2_kozigegyseg = model('ogy2018_v2_kozigegyseg', KozigEgysegSchema)
 const idbo620_v1_kozigegyseg = model('idbo620_v1_kozigegyseg', KozigEgysegSchema)
+const ogy2022_v1_kozigegyseg = model('ogy2022_v1_kozigegyseg', new Schema({}, { collection: 'ogy2022_v1_kozigegysegs' }))
 
 const onk2019_v1_valasztokerulet = model('onk2019_v1_valasztokerulet', ValasztokeruletSchema)
 const onk2019_v2_valasztokerulet = model('onk2019_v2_valasztokerulet', ValasztokeruletSchema)
 const ogy2018_v1_valasztokerulet = model('ogy2018_v1_valasztokerulet', ValasztokeruletSchema)
 const ogy2018_v2_valasztokerulet = model('ogy2018_v2_valasztokerulet', ValasztokeruletSchema)
 const idbo620_v1_valasztokerulet = model('idbo620_v1_valasztokerulet', ValasztokeruletSchema)
+const ogy2022_v1_valasztokerulet = model('ogy2022_v1_valasztokerulet', new Schema({}, { collection: 'ogy2022_v1_valasztokerulets' }))
 
 const onk2019_v1_szavazokor = model('onk2019_v1_szavazokor', SzavazokorSchema)
 const onk2019_v2_szavazokor = model('onk2019_v2_szavazokor', SzavazokorSchema)
 const ogy2018_v1_szavazokor = model('ogy2018_v1_szavazokor', SzavazokorSchema)
 const ogy2018_v2_szavazokor = model('ogy2018_v2_szavazokor', SzavazokorSchema)
 const idbo620_v1_szavazokor = model('idbo620_v1_szavazokor', SzavazokorSchema)
+const ogy2022_v1_szavazokor = model('ogy2022_v1_szavazokor', new Schema({}, { collection: 'ogy2022_v1_szavazokors' }))
 
 const ogy2018_v2_szavazat = model('ogy2018_v2_szavazat', SzavazatSchema)
 const valasztasok = model('valasztasok', ValasztasSchema)
+
 
 
 module.exports = {
@@ -66,7 +70,11 @@ module.exports = {
     idbo620: {
       v1: idbo620_v1_szavazokor,
       latest: idbo620_v1_szavazokor,
-    },		
+    },
+    ogy2022: {
+      v1: ogy2022_v1_szavazokor,
+      latest: ogy2022_v1_szavazokor,
+    }
   },
   KozigEgyseg: {
     onk2019: {
@@ -83,6 +91,10 @@ module.exports = {
       v1: idbo620_v1_kozigegyseg,
       latest: idbo620_v1_kozigegyseg,
     },
+    ogy2022: {
+      v1: ogy2022_v1_kozigegyseg,
+      latest: ogy2022_v1_kozigegyseg,
+    }
   },
   Valasztokerulet: {
     onk2019: {
@@ -98,7 +110,11 @@ module.exports = {
     idbo620: {
       v1: idbo620_v1_valasztokerulet,
       latest: idbo620_v1_valasztokerulet,
-    },		
+    },
+    ogy2022: {
+      v1: ogy2022_v1_valasztokerulet,
+      latest: ogy2022_v1_valasztokerulet,
+    }
 	},
 	Szavazat: {
 		ogy2018: {
