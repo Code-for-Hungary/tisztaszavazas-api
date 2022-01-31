@@ -18,14 +18,14 @@ const onk2019_v2_kozigegyseg = model('onk2019_v2_kozigegyseg', KozigEgysegSchema
 const ogy2018_v1_kozigegyseg = model('ogy2018_v1_kozigegyseg', KozigEgysegSchema)
 const ogy2018_v2_kozigegyseg = model('ogy2018_v2_kozigegyseg', KozigEgysegSchema)
 const idbo620_v1_kozigegyseg = model('idbo620_v1_kozigegyseg', KozigEgysegSchema)
-const ogy2022_v1_kozigegyseg = model('ogy2022_v1_kozigegyseg', new Schema({}, { collection: 'ogy2022_v1_kozigegyseg' }))
+const ogy2022_v1_kozigegyseg = model('ogy2022_v1_kozigegyseg', new Schema({}, { collection: 'ogy2022_v1_kozigegysegs' }))
 
 const onk2019_v1_valasztokerulet = model('onk2019_v1_valasztokerulet', ValasztokeruletSchema)
 const onk2019_v2_valasztokerulet = model('onk2019_v2_valasztokerulet', ValasztokeruletSchema)
 const ogy2018_v1_valasztokerulet = model('ogy2018_v1_valasztokerulet', ValasztokeruletSchema)
 const ogy2018_v2_valasztokerulet = model('ogy2018_v2_valasztokerulet', ValasztokeruletSchema)
 const idbo620_v1_valasztokerulet = model('idbo620_v1_valasztokerulet', ValasztokeruletSchema)
-const ogy2022_v1_valasztokerulet = model('ogy2022_v1_valasztokerulet', new Schema({}, { collection: 'ogy2022_v1_valasztokerulet' }))
+const ogy2022_v1_valasztokerulet = model('ogy2022_v1_valasztokerulet', new Schema({}, { collection: 'ogy2022_v1_valasztokerulets' }))
 
 const onk2019_v1_szavazokor = model('onk2019_v1_szavazokor', SzavazokorSchema)
 const onk2019_v2_szavazokor = model('onk2019_v2_szavazokor', SzavazokorSchema)
