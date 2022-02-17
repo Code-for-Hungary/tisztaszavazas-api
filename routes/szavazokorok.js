@@ -35,6 +35,9 @@ const parseStringObject = require('../functions/parseStringObject')
  *       },
  *       "szavazokorCime": "Batthyány utca 7. (Veres Péter Gimnázium)",
  *       "akadalymentes": true,
+ *       "telepulesSzintu": false,
+ *       "szamlKijelolt": false,
+ *       "atjKijelolt": false,
  *       "valasztokerulet": {
  *           "leiras": "Balmazújváros 1. számú EVK",
  *           "szam": 1
