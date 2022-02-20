@@ -1,3 +1,10 @@
+const textualNumericFields = [
+	'szavazokorSzama',
+	'kozigEgyseg.megyeKod',
+	'kozigEgyseg.telepulesKod',
+	'kozigEgyseg.evk_lst'
+]
+
 const toNumeric = string => {
   if (isNaN(+string)) {
     return undefined
@@ -54,7 +61,9 @@ const toDate = string => {
 
 const hasParsed = parsed => typeof parsed !== 'undefined';
 
-const parseQueryValue = value => {
+const parseQueryValue = (value, key) => {
+	if (textualNumericFields.includes(key)) return value
+
   let parsed = toBoolean(value); if (hasParsed(parsed)) return parsed;
   parsed = toNumeric(value); if (hasParsed(parsed)) return parsed;
   parsed = toRegex(value); if (hasParsed(parsed)) return parsed;
@@ -69,12 +78,12 @@ const parseQuery = (query = {}) => (
       return {
         ...acc,
         $and: value.map(v => ({
-          [key]: parseQueryValue(v)
+          [key]: parseQueryValue(v, key)
         }))
       }
     }
     return {
-      ...acc, [key]: parseQueryValue(value)
+      ...acc, [key]: parseQueryValue(value, key)
     }
   }, {})
 )
