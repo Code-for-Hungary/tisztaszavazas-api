@@ -1,3 +1,6 @@
+const textualNumericFieldsDbs = [
+	'ogy2022'
+]
 const textualNumericFields = [
 	'szavazokorSzama',
 	'kozigEgyseg.megyeKod',
@@ -61,8 +64,8 @@ const toDate = string => {
 
 const hasParsed = parsed => typeof parsed !== 'undefined';
 
-const parseQueryValue = (value, key) => {
-	if (textualNumericFields.includes(key)) return value
+const parseQueryValue = (value, key, db) => {
+	if (textualNumericFieldsDbs.includes(db) && textualNumericFields.includes(key)) return value
 
   let parsed = toBoolean(value); if (hasParsed(parsed)) return parsed;
   parsed = toNumeric(value); if (hasParsed(parsed)) return parsed;
@@ -72,18 +75,18 @@ const parseQueryValue = (value, key) => {
   return value
 }
 
-const parseQuery = (query = {}) => (
+const parseQuery = (query = {}, db) => (
 	Object.entries(query).reduce((acc, [key, value]) => {
     if (Array.isArray(value)){
       return {
         ...acc,
         $and: value.map(v => ({
-          [key]: parseQueryValue(v, key)
+          [key]: parseQueryValue(v, key, db)
         }))
       }
     }
     return {
-      ...acc, [key]: parseQueryValue(value, key)
+      ...acc, [key]: parseQueryValue(value, key, db)
     }
   }, {})
 )
