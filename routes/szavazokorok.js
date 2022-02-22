@@ -231,7 +231,7 @@ router.all('/:szavazokorId?', async (req, res) => {
 
   let limit, projection, skip, totalCount;
 
-  query = parseQuery(query)
+  query = parseQuery(query, db)
 
   ;({ limit = DEFAULT_LIMIT, skip = 0, ...query } = query)
 
