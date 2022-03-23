@@ -1,12 +1,15 @@
+const { pad } = require('./stringFunctions')
+
 const textualNumericFieldsDbs = [
 	'ogy2022'
 ]
-const textualNumericFields = [
-	'szavazokorSzama',
-	'kozigEgyseg.megyeKod',
-	'kozigEgyseg.telepulesKod',
-	'kozigEgyseg.evk_lst'
-]
+
+const textualNumericFields = {
+	'szavazokorSzama': 3,
+	'kozigEgyseg.megyeKod': 2,
+	'kozigEgyseg.telepulesKod': 3,
+	'kozigEgyseg.evk_lst': 2,
+}
 
 const toNumeric = string => {
   if (isNaN(+string)) {
@@ -64,8 +67,13 @@ const toDate = string => {
 
 const hasParsed = parsed => typeof parsed !== 'undefined';
 
-const parseQueryValue = (value, key, db) => {
-	if (textualNumericFieldsDbs.includes(db) && textualNumericFields.includes(key)) return value
+const parseQueryValue = (value, key, db, numParse) => {
+	if (textualNumericFieldsDbs.includes(db) && Object.keys(textualNumericFields).includes(key)) {
+		if (numParse) {
+			return pad(value, textualNumericFields[key])
+		 }
+		 return value
+	}
 
   let parsed = toBoolean(value); if (hasParsed(parsed)) return parsed;
   parsed = toNumeric(value); if (hasParsed(parsed)) return parsed;
@@ -75,18 +83,18 @@ const parseQueryValue = (value, key, db) => {
   return value
 }
 
-const parseQuery = (query = {}, db) => (
+const parseQuery = (query = {}, db, numParse) => (
 	Object.entries(query).reduce((acc, [key, value]) => {
     if (Array.isArray(value)){
       return {
         ...acc,
         $and: value.map(v => ({
-          [key]: parseQueryValue(v, key, db)
+          [key]: parseQueryValue(v, key, db, numParse)
         }))
       }
     }
     return {
-      ...acc, [key]: parseQueryValue(value, key, db)
+      ...acc, [key]: parseQueryValue(value, key, db, numParse)
     }
   }, {})
 )
