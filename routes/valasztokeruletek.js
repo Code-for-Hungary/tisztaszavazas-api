@@ -15,7 +15,8 @@ const parseStringObject = require('../functions/parseStringObject')
 * @apiParam (Request Parameters) {Number} [skip] A lapozáshoz használható paraméter. (default: `0`)
 * @apiParam (Request Parameters) {Number|String|Regex|Query} [queryParameters] A rekordok bármely paramétere alapján lehet szűkíteni a listát.
 * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
-* @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása (Lehetsésges értékek: 2018-as országgyűlési: `ogy2018`)
+* @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (Lehetsésges értékek: 2022-3s országgyűlési: `ogy2022`)
+* @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli 
 * @apiHeader (Response Headers) X-Total-Count A szűrési feltételeknek megfelelő, a válaszban lévő összes elem a lapozási beállításoktől függetlenül
 * @apiHeader (Response Headers) X-Prev-Page A `limit` és `skip` paraméterekkel meghatározott lapozás következő oldala
 * @apiHeader (Response Headers) X-Next-Page A `limit` és `skip` paraméterekkel meghatározott lapozás előző oldala
@@ -55,7 +56,8 @@ const parseStringObject = require('../functions/parseStringObject')
  *
  * @apiParam {String} id A Választókerület azonosítója az adatbázisban
  * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
- * @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása (lásd fent)
+ * @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (lásd fent)
+ * @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli 
  *  
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK
@@ -152,7 +154,10 @@ router.all('/:id?', async (req, res) => {
       params: { id },
       query,
       body,
+      headers,
     } = req;
+
+    const numParse = headers['x-num-parse'] === 'true'
 
     let limit, skip, result, totalCount
     query = parseQuery(query)
@@ -170,7 +175,7 @@ router.all('/:id?', async (req, res) => {
       result = {
         _id: result['_id'],
         leiras: result._doc.leiras,
-        szam: result._doc.szam,
+        szam: numParse ? parseInt(result._doc.szam) : result._doc.szam,
         ...(await getVkDetails(Szavazokors, id)),
         korzethatar: result._doc.korzethatar,
       }
@@ -193,6 +198,11 @@ router.all('/:id?', async (req, res) => {
           result: aggregations,
           totalCount: [{ $match: query },{ $count: 'totalCount' }] }
       }]))
+
+      result = result.map(({ szam, ...rest }) => ({
+        szam: numParse ? parseInt(szam) : szam,
+        ...rest
+      }))
 
       totalCount = totalCount && totalCount[0] && totalCount[0].totalCount   
     }

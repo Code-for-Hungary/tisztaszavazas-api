@@ -17,8 +17,9 @@ const parseStringObject = require('../functions/parseStringObject')
  * @apiParam (Request Parameters) {Number} [skip] A lapozáshoz használható paraméter. (default: `0`)
  * @apiParam (Request Parameters) {Number|String|Regex|Query} [queryParameters] A rekordok bármely paramétere alapján lehet szűkíteni a listát. Használatukról bővebben a [3. pont](#api-Szavazókörök-szavazokorok3) alatt.
  * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
- * @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása (Lehetsésges értékek: 2019-es önkormányzati: `onk2019`, 2018-as országgyűlési: `ogy2018`, 2020-as borsodi időközi: `idbo620`)
+ * @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (Lehetsésges értékek: 2019-es önkormányzati: `onk2019`, 2022-es országgyűlési: `ogy2022`, 2020-as borsodi időközi: `idbo620`)
  * @apiHeader (Request Headers) [X-Iterating-Query] Több paraméteres lekérdezéskor használható. `true` értéknél az API a paraméterenket egyenként alkalmazza (az általunk megadott sorrendet tartva), ezáltal fokozatosan szűkítve a keresést. Eredményként az utolsó, nem üres eredményt kapjuk vissza.
+ * @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli 
  * @apiHeader (Response Headers) X-Total-Count A szűrési feltételeknek megfelelő, a válaszban lévő összes elem a lapozási beállításoktől függetlenül
  * @apiHeader (Response Headers) X-Prev-Page A `limit` és `skip` paraméterekkel meghatározott lapozás következő oldala
  * @apiHeader (Response Headers) X-Next-Page A `limit` és `skip` paraméterekkel meghatározott lapozás előző oldala
@@ -75,7 +76,8 @@ const parseStringObject = require('../functions/parseStringObject')
  *
  * @apiParam {String} id A szavazókör azonosítója az adatbázisban
  * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
- * @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása (lásd fent)
+ * @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (lásd fent)
+ * @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli
  *
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
@@ -226,12 +228,15 @@ router.all('/:szavazokorId?', async (req, res) => {
   let {
     params: { szavazokorId },
     query,
-    body
+    body,
+    headers
   } = req;
+
+  const numParse = headers['x-num-parse'] === 'true'
 
   let limit, projection, skip, totalCount;
 
-  query = parseQuery(query, db)
+  query = parseQuery(query, db, numParse)
 
   ;({ limit = DEFAULT_LIMIT, skip = 0, ...query } = query)
 
@@ -249,14 +254,14 @@ router.all('/:szavazokorId?', async (req, res) => {
       if (result && result['_doc'].kozigEgyseg) {
         const { kozigEgyseg } = result['_doc']
         kozigEgysegSzavazokoreinekSzama = await getSzavazokorCount({ kozigEgyseg })
-        result = mapIdResult(result['_doc'], db, kozigEgysegSzavazokoreinekSzama)
+        result = mapIdResult(result['_doc'], db, kozigEgysegSzavazokoreinekSzama, numParse)
       }
     } else if (body && body.query){
       try {
         const aggregations = parseStringObject(body.query)
         result = await Szavazokors.aggregate(aggregations)
         try {
-          result = mapQueryResult(result, query, db)
+          result = mapQueryResult(result, query, numParse)
         } catch(error){
           console.log('mapQueryResult cannot be applied')
         }
@@ -269,7 +274,7 @@ router.all('/:szavazokorId?', async (req, res) => {
       totalCount = await Szavazokors.estimatedDocumentCount()
       result = await Szavazokors.find({}, projection).skip(skip).limit(limit)
 
-      result = mapQueryResult(result, query, db)
+      result = mapQueryResult(result, query, numParse)
     } else {
       
       const [filterCond, regexStreetToFilter] = getSzkAggregationFilter(query);
@@ -360,7 +365,7 @@ router.all('/:szavazokorId?', async (req, res) => {
         szkSzamIfLengthOne = await getSzavazokorCount({ kozigEgyseg: result[0].kozigEgyseg })
       }
 
-      result = mapQueryResult(result, query, db, szkSzamIfLengthOne)
+      result = mapQueryResult(result, query, numParse)
     }
 
     const prevNextLinks = getPrevNextLinks({

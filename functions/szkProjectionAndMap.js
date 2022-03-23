@@ -66,7 +66,7 @@ const getProjection = ({ roles }, context) => {
   }
 }
 
-const mapQueryResult = (result, query) => {
+const mapQueryResult = (result, query, numParse) => {
   return result.map(({
     _id,
     __v,
@@ -92,19 +92,24 @@ const mapQueryResult = (result, query) => {
 
   const entry = {
     _id,
-    szavazokorSzama,
+    szavazokorSzama: numParse ? parseInt(szavazokorSzama) : szavazokorSzama,
     kozigEgyseg: {
       _id: kozigEgyseg['_id'],
       ...kozigEgyseg,
+      telepulesKod: numParse ? parseInt(kozigEgyseg.telepulesKod) : kozigEgyseg.telepulesKod,
+      megyeKod: numParse ? parseInt(kozigEgyseg.megyeKod) : kozigEgyseg.megyeKod,
       __v: undefined,
-      link: `/kozigegysegek/${kozigEgyseg['_id']}`
+      linc: `/kozigegysegek/${kozigEgyseg['_id']}`
     },
     szavazokorCime,
     akadalymentes,
     telepulesSzintu,
     szamlKijelolt,
     atjKijelolt,
-    valasztokerulet,
+    valasztokerulet: {
+      ...valasztokerulet,
+      szam: numParse ? parseInt(valasztokerulet.szam) : valasztokerulet.szam
+    },
     kozteruletek: mapKozteruletek(kozteruletek),
     valasztokSzama,
     korzethatar,
@@ -140,10 +145,10 @@ const mapIdResult = (
     szavazohelyisegHelye,
     valasztas,
     __v
-  }, db, kozigEgysegSzavazokoreinekSzama
+  }, db, kozigEgysegSzavazokoreinekSzama, numParse
   ) => ({
     _id,
-    szavazokorSzama,
+    szavazokorSzama: numParse ? parseInt(szavazokorSzama) : szavazokorSzama,
     kozigEgyseg: {
       _id: kozigEgyseg['_id'],
       kozigEgysegNeve: kozigEgyseg.kozigEgysegNeve,
@@ -157,7 +162,10 @@ const mapIdResult = (
     szamlKijelolt,
     atjKijelolt,
     valasztokSzama,
-    valasztokerulet,
+    valasztokerulet: {
+      ...valasztokerulet,
+      szam: numParse ? parseInt(valasztokerulet.szam) : valasztokerulet.szam
+    },
     kozteruletek: mapKozteruletek(kozteruletek),
     helyadatok,
     korzethatar,
