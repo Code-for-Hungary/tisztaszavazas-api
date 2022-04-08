@@ -9,6 +9,8 @@ const textualNumericFields = {
 	'kozigEgyseg.megyeKod': 2,
 	'kozigEgyseg.telepulesKod': 3,
 	'kozigEgyseg.evk_lst': 2,
+	'szavazokor.kozigEgyseg.megyeKod': 2,
+	'szavazokor.kozigEgyseg.telepulesKod': 3,
 }
 
 const toNumeric = string => {

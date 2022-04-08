@@ -15,8 +15,9 @@ const parseStringObject = require('../functions/parseStringObject')
 * @apiParam (Request Parameters) {Number} [skip] A lapozáshoz használható paraméter. (default: `0`)
 * @apiParam (Request Parameters) {Number|String|Regex|Query} [queryParameters] A rekordok bármely paramétere alapján lehet szűkíteni a listát.
 * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
-* @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása (Lehetsésges értékek: 2018-as országgyűlési: `ogy2018`)
+* @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (Lehetsésges értékek: 2018-es országgyűlési: `ogy2018`, 2022-es országgyűlési: `ogy2022`)
 * @apiHeader (Response Headers) X-Total-Count A szűrési feltételeknek megfelelő, a válaszban lévő összes elem a lapozási beállításoktől függetlenül
+* @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli 
 * @apiHeader (Response Headers) X-Prev-Page A `limit` és `skip` paraméterekkel meghatározott lapozás következő oldala
 * @apiHeader (Response Headers) X-Next-Page A `limit` és `skip` paraméterekkel meghatározott lapozás előző oldala
 *
@@ -73,10 +74,13 @@ router.all('/:id?', async (req, res) => {
       params: { id },
       query,
       body,
+      headers,
     } = req;
 
+    const numParse = headers['x-num-parse'] === 'true'
+
     let limit, skip, result, totalCount
-    query = parseQuery(query)
+    query = parseQuery(query, db, numParse)
 
     ;({
       limit = DEFAULT_LIMIT,
@@ -99,7 +103,7 @@ router.all('/:id?', async (req, res) => {
         { $match: query },
         { $skip: skip },
         { $limit: limit },
-      ]
+      ] 
 
       ;([{ result, totalCount }] = await Szavazats.aggregate([{
         $facet: {

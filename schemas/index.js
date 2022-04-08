@@ -35,6 +35,7 @@ const idbo620_v1_szavazokor = model('idbo620_v1_szavazokor', SzavazokorSchema)
 const ogy2022_v1_szavazokor = model('ogy2022_v1_szavazokor', new Schema({}, { collection: 'ogy2022_v1_szavazokors' }))
 
 const ogy2018_v2_szavazat = model('ogy2018_v2_szavazat', SzavazatSchema)
+const ogy2022_v1_szavazat = model('ogy2022_v1_szavazat', SzavazatSchema)
 const valasztasok = model('valasztasok', ValasztasSchema)
 
 
@@ -120,6 +121,10 @@ module.exports = {
 		ogy2018: {
       v2: ogy2018_v2_szavazat,
       latest: ogy2018_v2_szavazat
+		},
+		ogy2022: {
+      v1: ogy2022_v1_szavazat,
+      latest: ogy2022_v1_szavazat
 		}
 	},
 	Valasztas: valasztasok,
