@@ -24,27 +24,47 @@ const parseStringObject = require('../functions/parseStringObject')
 * @apiSuccessExample {json} Success-Response:
 *  HTTP/1.1 200 OK
 *  [
-*    { 
-*      "_id": "5eee424dac32540023500d13",
-*      "leiras": "Budapest 1. számú OEVK",
-*      "szam": 1,
-*      "korzethatar": {
-*        "type": "Polygon",
-*        "coordinates": [
-*           [
-*             [
-*               19.066171646118164,
-*               47.47514343261719
-*             ],
-*             [
-*               19.074604034423828,
-*               47.477970123291016
-*             ],
-* 	  	      ...
-*           ]
-*         ]
-*       }
-*     }
+*     {
+*        "_id": "624f29bff7d1c72624c0cdc4",
+*        "szavazokor": {
+*            "_id": "620ed7332fdd2c590712bca7",
+*            "szavazokorSzama": "001",
+*            "kozigEgyseg": {
+*                "kozigEgysegNeve": "Budapest I. kerület",
+*                "telepulesKod": "001",
+*                "megyeKod": "01",
+*                "megyeNeve": "BUDAPEST",
+*                "_id": "620ed5682fdd2c590712b03e"
+*            },
+*            "valasztokerulet": {
+*                "szam": "01",
+*                "leiras": "BUDAPEST, 01. számú OEVK",
+*                "_id": "620ed5672fdd2c590712afd4"
+*            }
+*        },
+*        "jeloles": {
+*            "pozicio": "Egyéni választókerületi képviselő",
+*            "jelolt": "BÖRÖCZ LÁSZLÓ",
+*            "jelolo": [
+*                {
+*                    "_id": "624f29bff7d1c72624c0cdc5",
+*                    "tipus": "Közös pártlista",
+*                    "szervezet": [
+*                        {
+*                            "_id": "624f29bff7d1c72624c0cdc6",
+*                            "rovidNev": "FIDESZ"
+*                        },
+*                        {
+*                            "_id": "624f29bff7d1c72624c0cdc7",
+*                            "rovidNev": "KDNP"
+*                        }
+*                    ]
+*                }
+*            ]
+*        },
+*        "ervenyesSzavazat": 446,
+*        "__v": 0
+*    },
 *   ]
 * @apiSampleRequest off
 */
