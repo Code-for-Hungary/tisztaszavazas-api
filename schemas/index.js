@@ -6,6 +6,7 @@ const KozigEgysegSchema = new Schema()
 const ValasztokeruletSchema = new Schema()
 const SzavazatSchema = new Schema()
 const ValasztasSchema = new Schema()
+const SzavazasEgyeb = new Schema()
 
 const onk2019_v1_szavazokor_url = model('onk2019_v1_szavazokor_url', SzavazokorUrlSchema)
 const onk2019_v2_szavazokor_url = model('onk2019_v2_szavazokor_url', SzavazokorUrlSchema)
@@ -36,7 +37,11 @@ const ogy2022_v1_szavazokor = model('ogy2022_v1_szavazokor', new Schema({}, { co
 
 const ogy2018_v2_szavazat = model('ogy2018_v2_szavazat', SzavazatSchema)
 const ogy2022_v1_szavazat = model('ogy2022_v1_szavazat', SzavazatSchema)
+const ogy2022_v2_szavazat = model('ogy2022_v2_szavazat', SzavazatSchema)
+
 const valasztasok = model('valasztasok', ValasztasSchema)
+
+const ogy2022_v2_szavazas_egyeb = model('ogy2022_v2_szavazas_egyeb', SzavazasEgyeb)
 
 
 
@@ -124,8 +129,15 @@ module.exports = {
 		},
 		ogy2022: {
       v1: ogy2022_v1_szavazat,
-      latest: ogy2022_v1_szavazat
+      v2: ogy2022_v2_szavazat,
+      latest: ogy2022_v2_szavazat
 		}
 	},
 	Valasztas: valasztasok,
+  SzavazasEgyeb: {
+    ogy2022: {
+      v2: ogy2022_v2_szavazas_egyeb,
+      latest: ogy2022_v2_szavazas_egyeb
+    }
+  }
 }

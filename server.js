@@ -13,6 +13,7 @@ const usage = require('./routes/usage')
 const valasztokerulet = require('./routes/valasztokeruletek')
 const szavazatok = require('./routes/szavazatok')
 const valasztasok = require('./routes/valasztasok')
+const szavazasEgyeb = require('./routes/szavazasEgyeb')
 
 
 dotenv.config()
@@ -41,6 +42,7 @@ app.use('/usage', usage)
 app.use('/vhupage', vhupage)
 app.use('/szavazatok', szavazatok)
 app.use('/valasztasok', valasztasok)
+app.use('/szavazas-egyeb', szavazasEgyeb)
 
 // Listen
 var port = process.env.PORT || 1338
