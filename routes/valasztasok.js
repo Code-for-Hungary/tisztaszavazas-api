@@ -7,7 +7,7 @@ const Models = require('../schemas')
 /**
 * @api {get} /valasztasok/ 1.) Az összes választás
 * @apiName valasztasok
-* @apiGroup 5. Választások
+* @apiGroup 6. Választások
 * @apiDescription Az adatbázisban feldolgozott választások
 *
 * @apiParam (Request Parameters) {Number} [limit] Csak a megadott számú találatot adja vissza (default: `20`)

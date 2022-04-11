@@ -5,11 +5,12 @@ const Models = require('../schemas')
 const getPrevNextLinks = require('../functions/getPrevNextLinks')
 const parseStringObject = require('../functions/parseStringObject')
 
+
 /**
-* @api {get} /szavazatok/ 1.) Az összes eredmény
-* @apiName szavazatok
-* @apiGroup 4. Szavazatok
-* @apiDescription A jelöltekre leadott szavazatok listája
+* @api {get} /szavazas-egyeb/ 1.) Szavazás egyéb
+* @apiName szavazas-egyeb
+* @apiGroup 5. Szavazás egyéb
+* @apiDescription Az érvénytelen és lebélyegzetlen szavazólapok
 *
 * @apiParam (Request Parameters) {Number} [limit] Csak a megadott számú találatot adja vissza (default: `20`)
 * @apiParam (Request Parameters) {Number} [skip] A lapozáshoz használható paraméter. (default: `0`)
@@ -23,49 +24,39 @@ const parseStringObject = require('../functions/parseStringObject')
 *
 * @apiSuccessExample {json} Success-Response:
 *  HTTP/1.1 200 OK
-*  [
-*     {
-*        "_id": "624f29bff7d1c72624c0cdc4",
-*        "szavazokor": {
-*            "_id": "620ed7332fdd2c590712bca7",
-*            "szavazokorSzama": "001",
-*            "kozigEgyseg": {
-*                "kozigEgysegNeve": "Budapest I. kerület",
-*                "telepulesKod": "001",
-*                "megyeKod": "01",
-*                "megyeNeve": "BUDAPEST",
-*                "_id": "620ed5682fdd2c590712b03e"
-*            },
-*            "valasztokerulet": {
-*                "szam": "01",
-*                "leiras": "BUDAPEST, 01. számú OEVK",
-*                "_id": "620ed5672fdd2c590712afd4"
-*            }
-*        },
-*        "jeloles": {
-*            "pozicio": "Egyéni választókerületi képviselő",
-*            "jelolt": "BÖRÖCZ LÁSZLÓ",
-*            "jelolo": [
-*                {
-*                    "_id": "624f29bff7d1c72624c0cdc5",
-*                    "tipus": "Közös pártlista",
-*                    "szervezet": [
-*                        {
-*                            "_id": "624f29bff7d1c72624c0cdc6",
-*                            "rovidNev": "FIDESZ"
-*                        },
-*                        {
-*                            "_id": "624f29bff7d1c72624c0cdc7",
-*                            "rovidNev": "KDNP"
-*                        }
-*                    ]
-*                }
-*            ]
-*        },
-*        "ervenyesSzavazat": 446,
-*        "__v": 0
-*    },
-*   ]
+*[
+*   {
+*       "_id": "6253a193e2cb28add339cd32",
+*       "szavazokor": {
+*           "_id": "620ed7332fdd2c590712bca7",
+*           "szavazokorSzama": "001",
+*           "kozigEgyseg": {
+*               "kozigEgysegNeve": "Budapest I. kerület",
+*               "telepulesKod": "001",
+*               "megyeKod": "01",
+*               "megyeNeve": "BUDAPEST",
+*               "letszam": {
+*                   "indulo": 20090,
+*                   "honos": 19809,
+*                   "atjel": 137,
+*                   "atjelInnen": 261,
+*                   "kuvi": 184,
+*                   "osszesen": 19946
+*               }
+*           },
+*           "valasztokerulet": {
+*               "szam": "01",
+*               "leiras": "BUDAPEST, 01. számú OEVK",
+*               "_id": "620ed5672fdd2c590712afd4"
+*           }
+*       },
+*       "darabszam": 12,
+*       "kategoria": "Érvénytelen szavazólapok",
+*       "jeloles": {
+*           "pozicio": "Egyéni választókerületi képviselő"
+*       },
+*       "__v": 0
+*   },
 * @apiSampleRequest off
 */
 
@@ -74,13 +65,13 @@ const router = express.Router();
 const DEFAULT_LIMIT = 20;
 
 router.all('*', authorization)
-let Szavazats, db;
+let SzavazasEgyebs, db;
 
 router.all('*', (req, res, next) => { 
   db = req.headers['x-valasztas-kodja'] || process.env.DEFAULT_DB
   const [valasztasAzonosito, version = 'latest'] = db.split('_')
-  Szavazats = Models.Szavazat[valasztasAzonosito][version]
-  if (!Szavazats){
+  SzavazasEgyebs = Models.SzavazasEgyeb[valasztasAzonosito][version]
+  if (!SzavazasEgyebs){
     res.status(400)
     res.json({'error': `Hibás választás kód: '${db}'` })
     return
@@ -109,12 +100,12 @@ router.all('/:id?', async (req, res) => {
     } = query)
 
     if (id) {
-      result = await Szavazats.findById(id)
+      result = await SzavazasEgyebs.findById(id)
       totalCount = 1
     } else if (body && body.query){
       try {
         const aggregations = parseStringObject(body.query)
-        result = await Szavazats.aggregate(aggregations)
+        result = await SzavazasEgyebs.aggregate(aggregations)
       } catch(error){
         result = error.message
       }
@@ -125,7 +116,7 @@ router.all('/:id?', async (req, res) => {
         { $limit: limit },
       ] 
 
-      ;([{ result, totalCount }] = await Szavazats.aggregate([{
+      ;([{ result, totalCount }] = await SzavazasEgyebs.aggregate([{
         $facet: {
           result: aggregations,
           totalCount: [{ $match: query },{ $count: 'totalCount' }] }
@@ -135,7 +126,7 @@ router.all('/:id?', async (req, res) => {
     }
 
     const prevNextLinks = getPrevNextLinks({
-      route: 'eredmenyek',
+      route: 'szavazas-egyeb',
       skip,
       limit,
       query,
