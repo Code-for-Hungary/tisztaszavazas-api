@@ -378,6 +378,11 @@ router.all('/:szavazokorId?', async (req, res) => {
 
     res.header({...prevNextLinks})
     res.header('X-Total-Count', totalCount)
+
+    if (headers.accept === 'text/csv'){
+      return resultToCsv(result, res)
+    }
+        
     res.status(200)
     res.json(result || 'Szavazokor not found')
   } catch(error) {

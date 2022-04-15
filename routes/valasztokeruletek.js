@@ -5,6 +5,8 @@ const authorization = require('../middlewares/authorization')
 const Models = require('../schemas')
 const getPrevNextLinks = require('../functions/getPrevNextLinks')
 const parseStringObject = require('../functions/parseStringObject')
+const resultToCsv = require('../functions/resultToCsv')
+
 
 /**
 * @api {get} /valasztokeruletek/ 1.) Összes választókerület
@@ -216,7 +218,12 @@ router.all('/:id?', async (req, res) => {
     })
 
     res.header({...prevNextLinks})
-    res.header('X-Total-Count', totalCount)  
+    res.header('X-Total-Count', totalCount)
+    
+    if (headers.accept === 'text/csv'){
+      return resultToCsv(result, res)
+    }
+
     res.json(result);
   } catch (error) {
     console.log(error)
