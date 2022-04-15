@@ -4,6 +4,7 @@ const authorization = require('../middlewares/authorization')
 const Models = require('../schemas')
 const getPrevNextLinks = require('../functions/getPrevNextLinks')
 const parseStringObject = require('../functions/parseStringObject')
+const { mapSzavazatIdResult } = require('../functions/szkProjectionAndMap')
 
 /**
 * @api {get} /szavazatok/ 1.) Az összes eredmény
@@ -111,10 +112,12 @@ router.all('/:id?', async (req, res) => {
     if (id) {
       result = await Szavazats.findById(id)
       totalCount = 1
+      result = mapSzavazatIdResult(result['_doc'], numParse)
     } else if (body && body.query){
       try {
         const aggregations = parseStringObject(body.query)
         result = await Szavazats.aggregate(aggregations)
+        result = result.map(entry => mapSzavazatIdResult(entry, numParse))
       } catch(error){
         result = error.message
       }
@@ -131,6 +134,7 @@ router.all('/:id?', async (req, res) => {
           totalCount: [{ $match: query },{ $count: 'totalCount' }] }
       }]))
 
+      result = result.map(entry => mapSzavazatIdResult(entry, numParse))
       totalCount = totalCount && totalCount[0] && totalCount[0].totalCount   
     }
 

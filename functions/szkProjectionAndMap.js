@@ -177,8 +177,38 @@ const mapIdResult = (
     __v
 })
 
+const mapSzavazatIdResult = ({
+  _id,
+  szavazokor,
+  jeloles,
+  ervenyesSzavazat,
+}, numParse) => {
+  return {
+    _id,
+    szavazokor: {
+      _id: szavazokor._id,
+      szavazokorSzama: numParse ? parseInt(szavazokor.szavazokorSzama) : szavazokor.szavazokorSzama,
+      kozigEgyseg: {
+        kozigEgysegNeve: szavazokor.kozigEgyseg.kozigEgysegNeve,
+        telepulesKod: numParse ? parseInt(szavazokor.kozigEgyseg.telepulesKod) : szavazokor.kozigEgyseg.telepulesKod,
+        megyeKod: numParse ? parseInt(szavazokor.kozigEgyseg.megyeKod) : szavazokor.kozigEgyseg.megyeKod,
+        megyeNeve: szavazokor.kozigEgyseg.megyeNeve,
+        letszam: szavazokor.kozigEgyseg.letszam,
+      },
+      valasztokerulet: {
+        _id: szavazokor.valasztokerulet._id,
+        szam: numParse ? parseInt(szavazokor.valasztokerulet.szam) : szavazokor.valasztokerulet.szam,
+        leiras: szavazokor.valasztokerulet.leiras
+      }
+    },
+    jeloles,
+    ervenyesSzavazat,
+  }
+}
+
 module.exports = {
   getProjection,
   mapQueryResult,
   mapIdResult,
+  mapSzavazatIdResult,
 }
