@@ -119,8 +119,13 @@ router.all('/:id?', async (req, res) => {
       try {
         const aggregations = parseStringObject(body.query)
         result = await Szavazats.aggregate(aggregations)
-        result = result.map(entry => mapSzavazatIdResult(entry, numParse))
+        try {
+          result = result.map(entry => mapSzavazatIdResult(entry, numParse))
+        } catch(error){
+          console.log('mapQueryResult cannot be applied in szavazatok')
+        }
       } catch(error){
+        console.log(error)
         result = error.message
       }
     } else {
