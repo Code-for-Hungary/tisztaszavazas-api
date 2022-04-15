@@ -5,6 +5,7 @@ const authorization = require('../middlewares/authorization')
 const Models = require('../schemas')
 const getPrevNextLinks = require('../functions/getPrevNextLinks')
 const parseStringObject = require('../functions/parseStringObject')
+const resultToCsv = require('../functions/resultToCsv')
 
 
 /**
@@ -16,6 +17,7 @@ const parseStringObject = require('../functions/parseStringObject')
 * @apiParam (Request Parameters) {Number} [skip] A lapozáshoz használható paraméter. (default: `0`)
 * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
 * @apiHeader (Request Headers) [X-Valasztas-Kodja] A választási adatbázis kiválasztása. (Lehetsésges értékek: 2019-es önkormányzati: `onk2019`, 2018-as országgyűlési: `ogy2018`, 2020-as borsodi időközi: `idbo620`)
+* @apiHeader (Request Headers) [Accept] Alaphelyzetben üres, ilyenkor JSON-t ad vissza. Beállítható `text/csv`, ekkor csv-t ad vissza, amennyiben a body adatstruktúrája megfelelő (array of objects with primitive values).
 * @apiHeader (Response Headers) X-Total-Count A szűrési feltételeknek megfelelő, a válaszban lévő összes elem a lapozási beállításoktől függetlenül
 * @apiHeader (Response Headers) X-Prev-Page A `limit` és `skip` paraméterekkel meghatározott lapozás következő oldala
 * @apiHeader (Response Headers) X-Next-Page A `limit` és `skip` paraméterekkel meghatározott lapozás előző oldala
@@ -141,7 +143,8 @@ router.all('/:id?', async (req, res) => {
     let {
       body,
       params: { id },
-      query
+      query,
+      headers,
     } = req;
 
     let limit, skip, result, totalCount, projection, group;
@@ -252,7 +255,12 @@ router.all('/:id?', async (req, res) => {
     })
 
     res.header({...prevNextLinks})
-    res.header('X-Total-Count', totalCount)  
+    res.header('X-Total-Count', totalCount)
+
+    if (headers.accept === 'text/csv'){
+      return resultToCsv(result, res)
+    }
+
     res.json(result);
   } catch (error) {
     console.log(error)

@@ -5,6 +5,7 @@ const Models = require('../schemas')
 const getPrevNextLinks = require('../functions/getPrevNextLinks')
 const parseStringObject = require('../functions/parseStringObject')
 const { mapSzavazatIdResult } = require('../functions/szkProjectionAndMap')
+const resultToCsv = require('../functions/resultToCsv')
 
 /**
 * @api {get} /szavazatok/ 1.) Az összes eredmény
@@ -17,6 +18,7 @@ const { mapSzavazatIdResult } = require('../functions/szkProjectionAndMap')
 * @apiParam (Request Parameters) {Number|String|Regex|Query} [queryParameters] A rekordok bármely paramétere alapján lehet szűkíteni a listát.
 * @apiHeader (Request Headers) Authorization A regisztrációkor kapott kulcs
 * @apiHeader (Request Headers) X-Valasztas-Kodja A választási adatbázis kiválasztása (Lehetsésges értékek: 2018-es országgyűlési: `ogy2018`, 2022-es országgyűlési: `ogy2022`)
+* @apiHeader (Request Headers) [Accept] Alaphelyzetben üres, ilyenkor JSON-t ad vissza. Beállítható `text/csv`, ekkor csv-t ad vissza, amennyiben a body adatstruktúrája megfelelő (array of objects with primitive values).
 * @apiHeader (Response Headers) X-Total-Count A szűrési feltételeknek megfelelő, a válaszban lévő összes elem a lapozási beállításoktől függetlenül
 * @apiHeader (Request Headers) [X-Num-Parse] A numerikus értékeket integerként kezeli 
 * @apiHeader (Response Headers) X-Prev-Page A `limit` és `skip` paraméterekkel meghatározott lapozás következő oldala
@@ -148,6 +150,11 @@ router.all('/:id?', async (req, res) => {
 
     res.header({...prevNextLinks})
     res.header('X-Total-Count', totalCount)  
+
+    if (headers.accept === 'text/csv'){
+      return resultToCsv(result, res)
+    }
+
     res.json(result);
   } catch (error) {
     console.log(error)
