@@ -133,21 +133,27 @@ router.all('*', authorization)
 
 let Valasztokerulets, Szavazokors, db;
 
-router.all('*', (req, res, next) => { 
-  db = req.headers['x-valasztas-kodja'] || process.env.DEFAULT_DB
-  const [valasztasAzonosito, version] = db.split('_')
+router.all('*', (req, res, next) => {
+  try {
+    db = req.headers['x-valasztas-kodja'] || process.env.DEFAULT_DB
+    const [valasztasAzonosito, version] = db.split('_')
 
-  Valasztokerulets = Models.Valasztokerulet[valasztasAzonosito][version]
-    || Models.Valasztokerulet[valasztasAzonosito].latest
-  Szavazokors = Models.Szavazokor[valasztasAzonosito][version]
-    || Models.Szavazokor[valasztasAzonosito].latest
+    Valasztokerulets = Models.Valasztokerulet[valasztasAzonosito][version]
+      || Models.Valasztokerulet[valasztasAzonosito].latest
+    Szavazokors = Models.Szavazokor[valasztasAzonosito][version]
+      || Models.Szavazokor[valasztasAzonosito].latest
 
-  if (!Valasztokerulets || !Szavazokors){
-    res.status(400)
-    res.json({'error': `Hibás választás kód: '${db}'` })
-    return
+    if (!Valasztokerulets || !Szavazokors){
+      res.status(400)
+      res.json({'error': `Hibás választás kód: '${db}'` })
+      return
+    }
+    next()
+  } catch (error) {
+    console.log(error)
+    res.status(404);
+    res.json('Valasztokerulet not found')
   }
-  next()
 })
 
 router.all('/:id?', async (req, res) => {
