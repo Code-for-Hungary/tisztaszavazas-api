@@ -35,6 +35,7 @@ const ogy2018_v1_szavazokor = model('ogy2018_v1_szavazokor', SzavazokorSchema)
 const ogy2018_v2_szavazokor = model('ogy2018_v2_szavazokor', SzavazokorSchema)
 const idbo620_v1_szavazokor = model('idbo620_v1_szavazokor', SzavazokorSchema)
 const ogy2022_v1_szavazokor = model('ogy2022_v1_szavazokor', new Schema({}, { collection: 'ogy2022_v1_szavazokors' }))
+const epv2024_v1_szavazokor = model('epv2024_v1_szavazokor', new Schema({}, { collection: 'epv2024_v1_szavazokors' }))
 
 const ogy2018_v2_szavazat = model('ogy2018_v2_szavazat', SzavazatSchema)
 const ogy2022_v1_szavazat = model('ogy2022_v1_szavazat', SzavazatSchema)
@@ -81,6 +82,10 @@ module.exports = {
     ogy2022: {
       v1: ogy2022_v1_szavazokor,
       latest: ogy2022_v1_szavazokor,
+    },
+    epv2024: {
+      v1: epv2024_v1_szavazokor,
+      latest: epv2024_v1_szavazokor
     }
   },
   KozigEgyseg: {
